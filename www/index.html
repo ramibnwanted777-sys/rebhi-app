@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ربحي</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700&display=swap');
+:root{
+  --bg:#FAF6EE; --surface:#FFFFFF; --ink:#1E2A22; --muted:#8A8574;
+  --green:#0B6E4F; --greenDark:#084D38; --gold:#E0A02E; --goldSoft:#F6E4BE;
+  --line:#EAE3D2; --danger:#B3432B; --earnBg:#E6F2EC; --dangerBg:#FBEAE5;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--ink);}
+.disp{font-family:'Cairo',sans-serif;}
+button{font-family:inherit;cursor:pointer;}
+input{font-family:inherit;}
+svg.ic{display:block;flex-shrink:0;}
+
+.page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 12px;flex-direction:column;gap:18px;}
+.phone{width:100%;max-width:380px;min-height:700px;background:var(--surface);border-radius:34px;border:10px solid var(--ink);box-shadow:0 30px 60px -20px rgba(30,42,34,0.35);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+.admin-phone{max-width:760px;border-radius:20px;border-width:0;box-shadow:none;background:transparent;}
+
+.head-green{background:var(--green);padding:44px 28px 34px;color:#fff;text-align:center;}
+.head-ink{background:var(--ink);padding:44px 28px 34px;color:#fff;text-align:center;}
+.head-icon{width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+
+.form-body{padding:26px 26px 20px;flex:1;}
+.pill-tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:22px;}
+.pill{flex:1;border:none;border-radius:9px;padding:9px 0;background:transparent;font-size:13.5px;font-weight:700;color:var(--muted);}
+.pill.active{background:var(--surface);box-shadow:0 2px 8px rgba(0,0,0,0.08);color:var(--green);}
+.field{margin-bottom:14px;}
+.field label{font-size:12.5px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.field input,.field select{width:100%;padding:11px 14px;border-radius:12px;border:1.5px solid var(--line);font-size:14px;background:#fff;color:var(--ink);outline:none;font-family:'Tajawal',sans-serif;}
+.field input:focus{border-color:var(--green);}
+.err{color:var(--danger);font-size:12.5px;margin-top:4px;}
+.primary-btn{width:100%;margin-top:18px;padding:14px 0;border-radius:14px;border:none;background:var(--ink);color:#fff;font-size:14.5px;font-weight:700;}
+.primary-btn:disabled{opacity:0.6;}
+.small-note{font-size:11px;color:var(--muted);text-align:center;margin-top:16px;}
+.admin-link-btn{border:none;background:transparent;padding:12px 0 18px;color:var(--muted);font-size:11.5px;text-decoration:underline;width:100%;}
+
+.app-header{background:var(--green);padding:14px 20px 20px;color:#fff;}
+.app-header-row{display:flex;justify-content:space-between;align-items:center;}
+.balance-pill{background:rgba(255,255,255,0.15);border-radius:999px;padding:6px 12px;display:flex;align-items:center;gap:6px;font-size:13px;}
+
+.tab-content{flex:1;overflow-y:auto;position:relative;padding-bottom:6px;}
+.tabpad{padding:26px 20px 20px;}
+
+.balance-hero{text-align:center;margin-bottom:22px;}
+.balance-hero .lbl{font-size:12.5px;color:var(--muted);margin-bottom:6px;}
+.balance-hero .num{font-size:40px;font-weight:800;}
+.balance-hero .num span{font-size:15px;color:var(--muted);font-weight:500;}
+.balance-hero .dzd{font-size:12px;color:var(--muted);margin-top:4px;}
+.watch-card{width:100%;border:none;border-radius:20px;padding:22px 18px;display:flex;align-items:center;justify-content:space-between;color:#fff;}
+.watch-card.can{background:linear-gradient(135deg,var(--green),var(--greenDark));box-shadow:0 14px 28px -12px rgba(11,110,79,0.55);}
+.watch-card.cant{background:var(--line);color:var(--muted);}
+.watch-title{font-size:17px;font-weight:700;margin-bottom:2px;}
+.watch-sub{font-size:12.5px;opacity:0.85;}
+.limit-box{margin-top:16px;background:var(--goldSoft);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:10px;font-size:12.5px;color:#6B5219;}
+.guide-box{margin-top:16px;border:1px solid var(--line);border-radius:16px;padding:14px 16px;}
+.guide-title{font-size:13px;font-weight:700;margin-bottom:8px;}
+.guide-row{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;border-bottom:1px solid var(--line);}
+.guide-row:last-child{border-bottom:none;}
+.guide-row span:first-child{color:var(--muted);}
+.guide-row span:last-child{font-weight:600;}
+
+.wheel-wrap{padding:24px 20px;}
+.wheel-outer{position:relative;width:200px;height:200px;margin:0 auto 20px;}
+.wheel-pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:16px solid var(--ink);z-index:2;}
+.wheel-disc{width:100%;height:100%;border-radius:50%;border:6px solid var(--ink);position:relative;overflow:hidden;transition:none;}
+.wheel-disc.spinning{transition:transform 3.1s cubic-bezier(0.17,0.67,0.2,1);}
+.wheel-label{position:absolute;top:-74px;left:-12px;width:24px;text-align:center;color:#fff;font-size:12px;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,0.35);}
+.wheel-btn{width:100%;border:none;border-radius:16px;padding:14px 0;font-size:14.5px;font-weight:700;}
+.games-grid{padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
+.game-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 12px;text-align:center;}
+.game-card .gi{width:42px;height:42px;border-radius:12px;background:var(--earnBg);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;}
+.game-name{font-size:13.5px;font-weight:700;}
+.game-reward{font-size:11.5px;color:var(--gold);margin-top:3px;font-weight:700;}
+.section-lbl2{padding:4px 20px 8px;font-size:13px;font-weight:700;color:var(--muted);}
+
+.tx-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);}
+.tx-left{display:flex;align-items:center;gap:12px;}
+.tx-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;}
+.tx-name{font-size:13.5px;font-weight:500;}
+.tx-date{font-size:11.5px;color:var(--muted);margin-top:1px;}
+.tx-amt{font-size:14px;font-weight:700;}
+
+.method-row2{display:flex;gap:10px;margin-bottom:20px;}
+.method-card{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink);}
+.method-card.active{border-color:var(--green);background:var(--earnBg);color:var(--greenDark);}
+.method-title{font-size:13px;font-weight:700;}
+.method-sub{font-size:10.5px;color:var(--muted);}
+.op-row{display:flex;gap:8px;margin-bottom:4px;}
+.op-btn{flex:1;padding:9px 0;border-radius:10px;border:1.5px solid var(--line);background:#fff;color:var(--muted);font-size:12.5px;font-weight:500;}
+.op-btn.active{border-color:var(--green);background:var(--earnBg);color:var(--greenDark);font-weight:700;}
+
+.bottomnav{display:flex;border-top:1px solid var(--line);background:var(--surface);}
+.navbtn{flex:1;border:none;background:transparent;padding:10px 0 12px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:11px;}
+.navbtn.active{color:var(--green);font-weight:700;}
+
+.toast{position:absolute;bottom:78px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:13.5px;display:flex;align-items:center;gap:8px;box-shadow:0 10px 25px -8px rgba(0,0,0,0.4);white-space:nowrap;z-index:30;}
+
+.watch-overlay{position:absolute;inset:0;background:rgba(10,14,11,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:18px;z-index:20;}
+.watch-circle{width:84px;height:84px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;}
+
+.blocked-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 30px;text-align:center;background:#1B1210;color:#fff;}
+.blocked-icon{width:70px;height:70px;border-radius:50%;background:rgba(179,67,43,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+
+.admin-top{background:var(--ink);color:#fff;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;}
+.admin-body{padding:20px 24px;max-width:720px;margin:0 auto;}
+.stat-row{display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap;}
+.stat-card{flex:1 1 140px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;}
+.stat-lbl{font-size:11.5px;color:var(--muted);margin-bottom:4px;}
+.stat-val{font-size:20px;font-weight:800;}
+.req-list{background:var(--surface);border-radius:16px;border:1px solid var(--line);overflow:hidden;}
+.req-item{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.req-item:last-child{border-bottom:none;}
+.req-name{font-size:13.5px;font-weight:600;}
+.req-meta{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.badge{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;}
+.badge.ok{color:var(--green);background:var(--earnBg);}
+.badge.bad{color:var(--danger);background:var(--dangerBg);}
+.mini-btn{border:none;border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:5px;}
+.mini-btn.ok{background:var(--earnBg);color:var(--green);}
+.mini-btn.bad{background:var(--dangerBg);color:var(--danger);}
+.section-lbl{font-size:15px;font-weight:700;margin-bottom:10px;}
+.admin-tabs2{display:flex;gap:8px;margin-bottom:16px;}
+.admin-tab2{padding:8px 16px;border-radius:20px;background:#fff;border:1px solid var(--line);color:var(--muted);font-size:13px;}
+.admin-tab2.active{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:700;}
+.empty{text-align:center;color:var(--muted);padding:30px 0;font-size:13.5px;}
+
+/* modal */
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.55);display:none;align-items:center;justify-content:center;z-index:40;padding:20px;}
+.modal-overlay.active{display:flex;}
+.modal-box{background:var(--surface);border-radius:22px;padding:26px 22px;width:100%;text-align:center;position:relative;}
+.modal-close{position:absolute;top:14px;left:14px;background:none;border:none;color:var(--muted);}
+.num-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:16px 0;}
+.num-btn{padding:12px 0;border-radius:10px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-weight:700;font-family:'Tajawal';font-size:15px;}
+.num-btn:disabled{opacity:0.35;}
+.reaction-zone{position:relative;height:200px;background:var(--bg);border-radius:16px;margin:16px 0;overflow:hidden;border:1px solid var(--line);}
+.reaction-target{width:56px;height:56px;border-radius:50%;background:var(--green);position:absolute;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+/* native banner ad slot */
+.ad-slot{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px;text-align:center;}
+.ad-slot .ad-lbl{font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:0.5px;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div id="app"></div>
+  <div class="ad-slot">
+    <div class="ad-lbl">إعلان · ADVERTISEMENT</div>
+    <div id="container-d89ebb4f0e2a3afed746cb2f0cf5c3f1"></div>
+  </div>
+</div>
+
+<script async="async" data-cfasync="false" src="https://pl31116978.profitableratecpmnetwork.com/d89ebb4f0e2a3afed746cb2f0cf5c3f1/invoke.js"></script>
+<script src="https://pl31116977.profitableratecpmnetwork.com/4e/ff/17/4eff17ce01fed422fe2a3b5899021bfb.js"></script>
+
+<script>
+/* ---------- ICONS (inline SVG, no external images/emojis) ---------- */
+const ICONS = {
+  coin: `<circle cx="12" cy="12" r="9"/><path d="M9.5 15.2c.4.7 1.3 1.1 2.4 1.1 1.6 0 2.7-.8 2.7-2 0-1.3-1.2-1.7-2.7-2.1-1.5-.4-2.4-.9-2.4-2.1 0-1.1 1-1.9 2.4-1.9 1 0 1.9.4 2.3 1"/><path d="M12 7.2v1M12 15.8v1"/>`,
+  user: `<circle cx="12" cy="8" r="3.4"/><path d="M5.5 19.5c1.2-3.2 3.6-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/>`,
+  mail: `<rect x="3.5" y="5.5" width="17" height="13" rx="2.2"/><path d="M4.5 7l7.5 6 7.5-6"/>`,
+  lock: `<rect x="5" y="10.5" width="14" height="9" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>`,
+  shield: `<path d="M12 3.5l7 2.6v5.4c0 4.6-3 8-7 9.4-4-1.4-7-4.8-7-9.4V6.1l7-2.6z"/><path d="M9 12l2 2 4-4.2"/>`,
+  home: `<path d="M4 11.5L12 4l8 7.5"/><path d="M6 10v9.5h12V10"/><path d="M10 19.5v-5h4v5"/>`,
+  gamepad: `<rect x="3" y="8" width="18" height="9.5" rx="4.5"/><path d="M8 10.7v4M6 12.7h4"/><circle cx="16" cy="11.5" r="1"/><circle cx="18" cy="14" r="1"/>`,
+  wallet: `<rect x="3.5" y="6.5" width="17" height="12.5" rx="2.5"/><path d="M3.5 10.5h17"/><circle cx="16.5" cy="14.5" r="1.2"/>`,
+  arrowDown: `<path d="M12 4.5v13"/><path d="M6.5 12l5.5 5.5L17.5 12"/>`,
+  play: `<circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5v-7z"/>`,
+  check: `<path d="M5 13l4.5 4.5L19.5 7"/>`,
+  clock: `<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.3 2"/>`,
+  phone: `<rect x="7" y="3" width="10" height="18" rx="2.2"/><path d="M11 18h2"/>`,
+  bank: `<path d="M4 10.5L12 5l8 5.5"/><path d="M5.5 10.5v8M9.5 10.5v8M14.5 10.5v8M18.5 10.5v8"/><path d="M4 19h16"/>`,
+  alert: `<path d="M12 4.5l9 15.5H3l9-15.5z"/><path d="M12 10.5v4"/><circle cx="12" cy="17" r="0.4" fill="currentColor" stroke="none"/>`,
+  x: `<path d="M6 6l12 12M18 6L6 18"/>`,
+  logout: `<path d="M9 5H6.5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2H9"/><path d="M15 8l4 4-4 4"/><path d="M19 12H9"/>`,
+  target: `<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>`,
+  bolt: `<path d="M12.5 3.5L5 13.5h5.5L11 20.5l7.5-11H13z"/>`,
+};
+function icon(name, size=18, color='currentColor', stroke=1.8){
+  const body = ICONS[name] || '';
+  return `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
+}
+
+const STORE = window.storage;
+const DAILY_LIMIT = 20;
+const POINTS_PER_AD = 10;
+const POINT_VALUE_DZD = 0.01;
+const MIN_WITHDRAW = 5000;
+const OPERATORS = ["موبيليس","جيزي","أوريدو"];
+const AD_MIN_GAP_MS = 3500;
+const SUSPICION_LIMIT = 2;
+const ADMIN_EMAIL = "admin@rebhi.dz";
+const ADMIN_PASSWORD = "Admin@2026";
+// AdMob IDs — from Google AdMob console (used only inside the native Android app; browsers ignore these)
+const ADMOB_APP_ID = "ca-app-pub-9018433497633458~6991878742";
+const ADMOB_REWARDED_UNIT_ID = "ca-app-pub-9018433497633458/4075282810";
+function isNativeApp(){
+  return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+}
+const WHEEL_PRIZES = [5,0,20,10,5,50,0,15];
+const GAME_COOLDOWN_MS = 30000;
+
+let state = { screen:'auth', authMode:'login', user:null, users:{}, withdrawals:[], loading:true, tab:'home', toast:null, watching:false, countdown:5 };
+
+function todayStr(){ return new Date().toDateString(); }
+function fmtDate(ts){ return new Date(ts).toLocaleDateString('ar-DZ',{day:'numeric',month:'short'}); }
+function fmtTime(ts){ return new Date(ts).toLocaleTimeString('ar-DZ',{hour:'2-digit',minute:'2-digit'}); }
+
+async function loadData(){
+  try{ const r = await STORE.get('rebhi_users', true); state.users = r ? JSON.parse(r.value) : {}; }catch(e){ state.users = {}; }
+  try{ const r = await STORE.get('rebhi_withdrawals', true); state.withdrawals = r ? JSON.parse(r.value) : []; }catch(e){ state.withdrawals = []; }
+  state.loading = false;
+}
+async function saveUsers(){ await STORE.set('rebhi_users', JSON.stringify(state.users), true); }
+async function saveWithdrawals(){ await STORE.set('rebhi_withdrawals', JSON.stringify(state.withdrawals), true); }
+
+function getUser(){ return state.users[state.user]; }
+function ensureDaily(u){
+  if(u.lastWatchDate !== todayStr()){ u.watchedToday = 0; u.lastWatchDate = todayStr(); }
+  if(u.wheelDate !== todayStr()){ u.wheelSpun = false; u.wheelDate = todayStr(); }
+}
+function canPlayGame(u){ return Date.now() - (u.lastGameAt||0) > GAME_COOLDOWN_MS; }
+
+function showToast(text){
+  state.toast = text;
+  render();
+  setTimeout(()=>{ state.toast = null; render(); }, 2600);
+}
+
+function render(){
+  const app = document.getElementById('app');
+  if(state.loading){ app.innerHTML = `<div style="color:var(--muted)">جارِ التحميل...</div>`; return; }
+  if(state.screen === 'admin') { app.innerHTML = `<div class="phone admin-phone">${renderAdmin()}</div>`; attachAdminEvents(); return; }
+  if(state.screen === 'adminAuth'){ app.innerHTML = `<div class="phone">${renderAdminAuth()}</div>`; attachAdminAuthEvents(); return; }
+  if(!state.user){ app.innerHTML = `<div class="phone">${renderAuth()}</div>`; attachAuthEvents(); return; }
+  const u = getUser();
+  ensureDaily(u);
+  if(u.blocked){ app.innerHTML = `<div class="phone">${renderBlocked()}</div>`; attachBlockedEvents(); return; }
+  app.innerHTML = `<div class="phone">${renderMainApp(u)}</div>`;
+  attachMainEvents(u);
+}
+
+/* ---------- AUTH ---------- */
+function renderAuth(){
+  const login = state.authMode === 'login';
+  return `
+  <div class="head-green">
+    <div class="head-icon">${icon('coin',26,'#fff')}</div>
+    <div class="disp" style="font-size:24px;font-weight:800;">ربحي</div>
+    <div style="font-size:13px;opacity:0.8;margin-top:4px;">شاهد إعلانات. اجمع نقاط. اسحب فلوسك.</div>
+  </div>
+  <div class="form-body">
+    <div class="pill-tabs">
+      <button class="pill ${login?'active':''}" id="pill-login">تسجيل الدخول</button>
+      <button class="pill ${!login?'active':''}" id="pill-signup">حساب جديد</button>
+    </div>
+    ${!login? `<div class="field"><label>${icon('user',14)} الاسم الكامل</label><input id="a-name" placeholder="مثال: أمين بلحاج"></div>` : ''}
+    <div class="field"><label>${icon('mail',14)} البريد الإلكتروني</label><input id="a-email" type="email" placeholder="name@example.com" dir="ltr"></div>
+    <div class="field"><label>${icon('lock',14)} كلمة السر</label><input id="a-pass" type="password" placeholder="••••••••" dir="ltr"></div>
+    <div class="err" id="a-err"></div>
+    <button class="primary-btn disp" id="a-submit">${login? 'دخول' : 'إنشاء الحساب'}</button>
+    <div class="small-note">نموذج تجريبي — البيانات محفوظة لغرض المعاينة فقط</div>
+  </div>`;
+}
+let secretTapCount = 0, secretTapTimer = null;
+function attachAuthEvents(){
+  document.getElementById('pill-login').onclick = ()=>{ state.authMode='login'; render(); };
+  document.getElementById('pill-signup').onclick = ()=>{ state.authMode='signup'; render(); };
+  // Hidden admin entry: tap the logo 5 times within 3 seconds (no visible link)
+  const logo = document.querySelector('.head-green .head-icon');
+  if(logo){
+    logo.style.cursor = 'pointer';
+    logo.onclick = ()=>{
+      secretTapCount++;
+      clearTimeout(secretTapTimer);
+      secretTapTimer = setTimeout(()=>{ secretTapCount = 0; }, 3000);
+      if(secretTapCount >= 5){
+        secretTapCount = 0;
+        state.screen='adminAuth';
+        render();
+      }
+    };
+  }
+  document.getElementById('a-submit').onclick = async ()=>{
+    const email = document.getElementById('a-email').value.trim().toLowerCase();
+    const pass = document.getElementById('a-pass').value;
+    const err = document.getElementById('a-err');
+    err.textContent = '';
+    if(!email.includes('@')){ err.textContent='أدخل بريدًا إلكترونيًا صحيحًا'; return; }
+    if(pass.length < 6){ err.textContent='كلمة السر يجب أن تكون 6 محارف على الأقل'; return; }
+    if(state.authMode === 'signup'){
+      const name = document.getElementById('a-name').value.trim();
+      if(name.length < 2){ err.textContent='أدخل اسمك الكامل'; return; }
+      if(state.users[email]){ err.textContent='هذا البريد مسجل بالفعل'; return; }
+      state.users[email] = {
+        name, email, password: pass, points: 0,
+        watchedToday: 0, lastWatchDate: todayStr(),
+        wheelSpun: false, wheelDate: todayStr(), lastGameAt: 0,
+        transactions: [], suspicion: 0, blocked: false,
+        lastAdStart: null, gaps: [], joinedAt: Date.now()
+      };
+      await saveUsers();
+      state.user = email;
+      showToast('تم إنشاء الحساب بنجاح');
+    } else {
+      const u = state.users[email];
+      if(!u || u.password !== pass){ err.textContent='بيانات دخول غير صحيحة'; return; }
+      state.user = email;
+    }
+    render();
+  };
+}
+
+function renderAdminAuth(){
+  return `
+  <div class="head-ink">
+    <div class="head-icon">${icon('shield',26,'#fff')}</div>
+    <div class="disp" style="font-size:20px;font-weight:800;">لوحة تحكم المدير</div>
+    <div style="font-size:12.5px;opacity:0.7;margin-top:4px;">دخول مخصص للإدارة فقط</div>
+  </div>
+  <div class="form-body">
+    <div class="field"><label>${icon('mail',14)} بريد المدير</label><input id="ad-email" placeholder="admin@rebhi.dz" dir="ltr"></div>
+    <div class="field"><label>${icon('lock',14)} كلمة السر</label><input id="ad-pass" type="password" dir="ltr"></div>
+    <div class="err" id="ad-err"></div>
+    <button class="primary-btn disp" id="ad-submit">دخول</button>
+  </div>
+  <button class="admin-link-btn" id="ad-back">← رجوع لدخول المستخدم</button>`;
+}
+function attachAdminAuthEvents(){
+  document.getElementById('ad-back').onclick = ()=>{ state.screen='auth'; render(); };
+  document.getElementById('ad-submit').onclick = ()=>{
+    const email = document.getElementById('ad-email').value.trim();
+    const pass = document.getElementById('ad-pass').value;
+    if(email === ADMIN_EMAIL && pass === ADMIN_PASSWORD){ state.screen='admin'; render(); }
+    else document.getElementById('ad-err').textContent = 'بيانات دخول غير صحيحة';
+  };
+}
+
+/* ---------- MAIN APP ---------- */
+function renderMainApp(u){
+  const remaining = DAILY_LIMIT - u.watchedToday;
+  const canWatch = remaining > 0 && !state.watching;
+  return `
+  <div class="app-header">
+    <div class="app-header-row">
+      <div>
+        <div class="disp" style="font-size:16px;font-weight:800;">أهلًا، ${u.name}</div>
+        <div style="font-size:12px;opacity:0.8;margin-top:2px;">شاهد. اربح. اسحب.</div>
+      </div>
+      <div class="balance-pill">${icon('coin',15,'#fff')}<span class="disp" style="font-weight:700;">${u.points}</span></div>
+    </div>
+  </div>
+  <div class="tab-content">
+    ${state.tab==='home'? renderHome(u, remaining, canWatch): ''}
+    ${state.tab==='games'? renderGames(u): ''}
+    ${state.tab==='wallet'? renderWallet(u): ''}
+    ${state.tab==='withdraw'? renderWithdraw(u): ''}
+    ${state.toast? `<div class="toast">${icon('check',15,'var(--gold)')} ${state.toast}</div>` : ''}
+    ${state.watching? `<div class="watch-overlay"><div class="watch-circle">${state.countdown}</div><div style="font-size:14px;opacity:0.75;">الإعلان قيد العرض...</div><div style="font-size:12px;opacity:0.5;max-width:220px;text-align:center;">في التطبيق الحقيقي هذا مكان إعلان AdMob المكافئ الفعلي</div></div>` : ''}
+    <div class="modal-overlay" id="modal-overlay"></div>
+  </div>
+  <nav class="bottomnav">
+    <button class="navbtn ${state.tab==='home'?'active':''}" data-tab="home">${icon('home',19)}الرئيسية</button>
+    <button class="navbtn ${state.tab==='games'?'active':''}" data-tab="games">${icon('gamepad',19)}ألعاب</button>
+    <button class="navbtn ${state.tab==='wallet'?'active':''}" data-tab="wallet">${icon('wallet',19)}المحفظة</button>
+    <button class="navbtn ${state.tab==='withdraw'?'active':''}" data-tab="withdraw">${icon('arrowDown',19)}السحب</button>
+  </nav>
+  <button id="logout-btn" style="position:absolute;top:14px;left:14px;border:none;background:rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:6px 8px;display:flex;">${icon('logout',15,'#fff')}</button>`;
+}
+
+function renderHome(u, remaining, canWatch){
+  return `
+  <div class="tabpad">
+    <div class="balance-hero">
+      <div class="lbl">رصيدك الحالي</div>
+      <div class="disp num">${u.points.toLocaleString('ar-DZ')}<span> نقطة</span></div>
+      <div class="dzd">≈ ${(u.points*POINT_VALUE_DZD).toFixed(2)} دج</div>
+    </div>
+    <button id="watch-btn" class="watch-card ${canWatch?'can':'cant'}" ${canWatch?'':'disabled'}>
+      <div style="text-align:right;">
+        <div class="disp watch-title">${canWatch? 'شاهد إعلان واربح' : 'استنفدت حصتك اليوم'}</div>
+        <div class="watch-sub">${canWatch? `+${POINTS_PER_AD} نقاط لكل مشاهدة` : 'عد غدًا لمزيد من النقاط'}</div>
+      </div>
+      ${icon('play',36,'#fff',1.4)}
+    </button>
+    <div class="limit-box">${icon('clock',18,'#6B5219')}تبقّى لك&nbsp;<b>${remaining}</b>&nbsp;من أصل ${DAILY_LIMIT} مشاهدة اليوم</div>
+    <div class="guide-box">
+      <div class="disp guide-title">دليل النقاط</div>
+      <div class="guide-row"><span>نقاط لكل إعلان</span><span>${POINTS_PER_AD} نقاط</span></div>
+      <div class="guide-row"><span>قيمة النقطة</span><span>${POINT_VALUE_DZD} دج</span></div>
+      <div class="guide-row"><span>الحد الأدنى للسحب</span><span>${MIN_WITHDRAW.toLocaleString('ar-DZ')} نقطة (50 دج)</span></div>
+      <div class="guide-row"><span>هدف 1000 دج</span><span>≈ 100,000 نقطة</span></div>
+    </div>
+  </div>`;
+}
+
+function renderGames(u){
+  const canSpin = !u.wheelSpun;
+  return `
+  <div class="wheel-wrap">
+    <div class="disp" style="font-size:17px;font-weight:800;margin-bottom:4px;">عجلة الحظ اليومية</div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:18px;">لفة واحدة مجانية كل يوم — ربح إضافي بدون إعلان</div>
+    <div class="wheel-outer">
+      <div class="wheel-pointer"></div>
+      <div class="wheel-disc" id="wheel-disc" style="background:conic-gradient(${WHEEL_PRIZES.map((_,i)=>(i%2===0?'var(--green)':'var(--gold)')+` ${(i*360)/WHEEL_PRIZES.length}deg ${((i+1)*360)/WHEEL_PRIZES.length}deg`).join(',')});">
+        ${WHEEL_PRIZES.map((p,i)=>{const seg=360/WHEEL_PRIZES.length; const angle=i*seg+seg/2; return `<div style="position:absolute;top:50%;left:50%;width:0;height:0;transform:rotate(${angle}deg);"><span class="wheel-label">${p}</span></div>`;}).join('')}
+      </div>
+    </div>
+    <button id="spin-btn" class="wheel-btn disp" style="background:${canSpin?'var(--ink)':'var(--line)'};color:${canSpin?'#fff':'var(--muted)'};" ${canSpin?'':'disabled'}>
+      ${canSpin? 'لُف العجلة' : 'رجعلك بكرة'}
+    </button>
+  </div>
+  <div class="section-lbl2">ألعاب سريعة (${GAME_COOLDOWN_MS/1000} ث انتظار بين كل لعبتين)</div>
+  <div class="games-grid">
+    <div class="game-card" id="game-guess">
+      <div class="gi">${icon('target',22,'var(--green)')}</div>
+      <div class="game-name">احزر الرقم</div>
+      <div class="game-reward">+5 نقاط</div>
+    </div>
+    <div class="game-card" id="game-reaction">
+      <div class="gi">${icon('bolt',22,'var(--green)')}</div>
+      <div class="game-name">تحدي السرعة</div>
+      <div class="game-reward">+5 نقاط</div>
+    </div>
+  </div>`;
+}
+
+function renderWallet(u){
+  const tx = [...(u.transactions||[])].sort((a,b)=>b.date-a.date);
+  return `
+  <div class="tabpad">
+    <div class="disp" style="font-size:18px;font-weight:800;margin-bottom:16px;">سجل المحفظة</div>
+    ${tx.length===0? '<div class="empty">لا توجد عمليات بعد</div>' : tx.map(t=>`
+      <div class="tx-row">
+        <div class="tx-left">
+          <div class="tx-icon" style="background:${t.type==='earn'?'var(--earnBg)':'var(--goldSoft)'};">${t.type==='earn'? icon('play',16,'var(--green)') : icon('arrowDown',16,'#8A6A1F')}</div>
+          <div><div class="tx-name">${t.type==='earn'? (t.meta||'مشاهدة إعلان') : 'طلب سحب'}</div>
+          <div class="tx-date">${fmtDate(t.date)} — ${fmtTime(t.date)}</div></div>
+        </div>
+        <div class="disp tx-amt" style="color:${t.type==='earn'?'var(--green)':'var(--danger)'};">${t.type==='earn'?'+':'-'}${t.amount}</div>
+      </div>`).join('')}
+  </div>`;
+}
+
+let wdMethod = 'flexi', wdOperator = OPERATORS[0];
+function renderWithdraw(u){
+  return `
+  <div class="tabpad">
+    <div class="disp" style="font-size:18px;font-weight:800;margin-bottom:4px;">اسحب نقاطك</div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:20px;">رصيدك: ${u.points.toLocaleString('ar-DZ')} نقطة (${(u.points*POINT_VALUE_DZD).toFixed(2)} دج) — الحد الأدنى ${MIN_WITHDRAW.toLocaleString('ar-DZ')} نقطة</div>
+    <div class="method-row2">
+      <button class="method-card ${wdMethod==='flexi'?'active':''}" id="m-flexi">${icon('phone',20)}<span class="method-title">فليكسي</span><span class="method-sub">فوري تقريبًا</span></button>
+      <button class="method-card ${wdMethod==='ccp'?'active':''}" id="m-ccp">${icon('bank',20)}<span class="method-title">تحويل CCP</span><span class="method-sub">مراجعة يدوية</span></button>
+    </div>
+    <label style="font-size:12.5px;color:var(--muted);display:block;margin-bottom:6px;">عدد النقاط المراد سحبها</label>
+    <input type="number" id="wd-amount" value="${MIN_WITHDRAW}" style="width:100%;padding:11px 14px;border-radius:12px;border:1.5px solid var(--line);font-size:14px;">
+    <div style="font-size:11.5px;color:var(--muted);margin-top:4px;" id="wd-dzd">= ${(MIN_WITHDRAW*POINT_VALUE_DZD).toFixed(2)} دج</div>
+    <div id="wd-method-fields" style="margin-top:16px;">${renderWdMethodFields()}</div>
+    <div class="err" id="wd-err"></div>
+    <button id="wd-submit" class="primary-btn disp">إرسال طلب السحب</button>
+    ${wdMethod==='ccp'? `<div style="font-size:11.5px;color:var(--muted);margin-top:12px;line-height:1.6;">طلبات التحويل البنكي تُراجَع يدويًا خلال 48 ساعة لعدم توفر بوابة دفع آلية للأفراد في الجزائر حاليًا.</div>` : ''}
+  </div>`;
+}
+function renderWdMethodFields(){
+  if(wdMethod === 'flexi'){
+    return `
+    <label style="font-size:12.5px;color:var(--muted);display:block;margin-bottom:6px;">الشركة</label>
+    <div class="op-row">${OPERATORS.map(op=>`<button class="op-btn ${wdOperator===op?'active':''}" data-op="${op}">${op}</button>`).join('')}</div>
+    <label style="font-size:12.5px;color:var(--muted);display:block;margin:12px 0 6px;">رقم الهاتف</label>
+    <input id="wd-phone" type="tel" placeholder="0555 12 34 56" style="width:100%;padding:11px 14px;border-radius:12px;border:1.5px solid var(--line);font-size:14px;">`;
+  }
+  return `
+    <label style="font-size:12.5px;color:var(--muted);display:block;margin-bottom:6px;">رقم CCP / RIP</label>
+    <input id="wd-ccp" type="text" placeholder="00799999 00 12" style="width:100%;padding:11px 14px;border-radius:12px;border:1.5px solid var(--line);font-size:14px;">`;
+}
+
+function attachMainEvents(u){
+  document.getElementById('logout-btn').onclick = ()=>{ state.user=null; state.tab='home'; render(); };
+  document.querySelectorAll('[data-tab]').forEach(b=>{ b.onclick = ()=>{ state.tab=b.dataset.tab; render(); }; });
+
+  const watchBtn = document.getElementById('watch-btn');
+  if(watchBtn) watchBtn.onclick = startAd;
+
+  const spinBtn = document.getElementById('spin-btn');
+  if(spinBtn) spinBtn.onclick = spinWheel;
+
+  const gGuess = document.getElementById('game-guess');
+  const gReact = document.getElementById('game-reaction');
+  if(gGuess) gGuess.onclick = openGuessGame;
+  if(gReact) gReact.onclick = openReactionGame;
+
+  const mFlexi = document.getElementById('m-flexi');
+  const mCcp = document.getElementById('m-ccp');
+  if(mFlexi) mFlexi.onclick = ()=>{ wdMethod='flexi'; render(); };
+  if(mCcp) mCcp.onclick = ()=>{ wdMethod='ccp'; render(); };
+  document.querySelectorAll('[data-op]').forEach(b=>{ b.onclick=()=>{ wdOperator=b.dataset.op; render(); }; });
+
+  const amtInput = document.getElementById('wd-amount');
+  if(amtInput) amtInput.oninput = ()=>{ document.getElementById('wd-dzd').textContent = `= ${(Number(amtInput.value||0)*POINT_VALUE_DZD).toFixed(2)} دج`; };
+
+  const wdSubmit = document.getElementById('wd-submit');
+  if(wdSubmit) wdSubmit.onclick = async ()=>{
+    const amount = Number(document.getElementById('wd-amount').value);
+    const err = document.getElementById('wd-err');
+    err.textContent = '';
+    if(amount < MIN_WITHDRAW){ err.textContent = `الحد الأدنى للسحب هو ${MIN_WITHDRAW.toLocaleString('ar-DZ')} نقطة`; return; }
+    if(amount > u.points){ err.textContent = 'رصيدك لا يكفي'; return; }
+    let meta, account;
+    if(wdMethod==='flexi'){
+      const phone = document.getElementById('wd-phone').value.trim();
+      if(phone.length < 9){ err.textContent = 'أكمل بيانات الاستلام'; return; }
+      meta = `فليكسي ${wdOperator}`; account = phone;
+    } else {
+      const ccp = document.getElementById('wd-ccp').value.trim();
+      if(ccp.length < 6){ err.textContent = 'أكمل بيانات الاستلام'; return; }
+      meta = 'تحويل CCP'; account = ccp;
+    }
+    u.points -= amount;
+    u.transactions = u.transactions || [];
+    u.transactions.unshift({ id:Date.now(), type:'withdraw', amount, date:Date.now(), meta });
+    state.withdrawals.push({ id:'w_'+Date.now(), email:u.email, name:u.name, points:amount, dzd:+(amount*POINT_VALUE_DZD).toFixed(2), method:meta, account, status:'pending', date:Date.now() });
+    await saveUsers(); await saveWithdrawals();
+    state.tab = 'wallet';
+    showToast('تم إرسال طلب السحب');
+  };
+}
+
+async function startAd(){
+  const u = getUser();
+  const remaining = DAILY_LIMIT - u.watchedToday;
+  if(remaining <= 0 || state.watching) return;
+  checkBotBehavior(u, Date.now());
+  if(u.blocked){ render(); return; }
+
+  if(isNativeApp() && window.Capacitor.Plugins.AdMob){
+    // Real AdMob rewarded video inside the packaged Android app
+    const { AdMob } = window.Capacitor.Plugins;
+    state.watching = true; render();
+    try{
+      await AdMob.prepareRewardVideoAd({ adId: ADMOB_REWARDED_UNIT_ID });
+      const rewardListener = AdMob.addListener('onRewardedVideoAdReward', async ()=>{
+        rewardListener.remove();
+        state.watching = false;
+        await finishAd(u);
+      });
+      const failListener = AdMob.addListener('onRewardedVideoAdFailedToLoad', ()=>{
+        failListener.remove();
+        state.watching = false;
+        showToast('تعذّر تحميل الإعلان، حاول لاحقًا');
+        render();
+      });
+      await AdMob.showRewardVideoAd();
+    }catch(e){
+      state.watching = false;
+      showToast('تعذّر تحميل الإعلان، حاول لاحقًا');
+      render();
+    }
+    return;
+  }
+
+  // Web preview fallback (plain browser, no native AdMob available)
+  state.watching = true; state.countdown = 5; render();
+  const timer = setInterval(()=>{
+    state.countdown--;
+    if(state.countdown <= 0){
+      clearInterval(timer);
+      finishAd(u);
+    } else render();
+  }, 1000);
+}
+function checkBotBehavior(u, now){
+  const prev = u.lastAdStart;
+  u.lastAdStart = now;
+  if(prev == null) return;
+  const gap = now - prev;
+  u.gaps = [...(u.gaps||[]).slice(-4), gap];
+  let flag = false;
+  if(gap < AD_MIN_GAP_MS) flag = true;
+  if(u.gaps.length >= 4){
+    const avg = u.gaps.reduce((a,b)=>a+b,0)/u.gaps.length;
+    const variance = u.gaps.reduce((s,g)=>s+(g-avg)**2,0)/u.gaps.length;
+    if(Math.sqrt(variance) < 40) flag = true;
+  }
+  if(flag){
+    u.suspicion = (u.suspicion||0) + 1;
+    if(u.suspicion >= SUSPICION_LIMIT) u.blocked = true;
+  }
+}
+async function finishAd(u){
+  state.watching = false;
+  u.points += POINTS_PER_AD;
+  u.watchedToday += 1;
+  u.transactions = u.transactions || [];
+  u.transactions.unshift({ id:Date.now(), type:'earn', amount:POINTS_PER_AD, date:Date.now() });
+  await saveUsers();
+  showToast(`ربحت ${POINTS_PER_AD} نقاط`);
+}
+async function spinWheel(){
+  const u = getUser();
+  if(u.wheelSpun) return;
+  const disc = document.getElementById('wheel-disc');
+  const idx = Math.floor(Math.random()*WHEEL_PRIZES.length);
+  const seg = 360/WHEEL_PRIZES.length;
+  const center = idx*seg + seg/2;
+  const target = 360*5 + (360-center);
+  disc.classList.add('spinning');
+  disc.style.transform = `rotate(${target}deg)`;
+  document.getElementById('spin-btn').disabled = true;
+  setTimeout(async ()=>{
+    u.wheelSpun = true;
+    const amount = WHEEL_PRIZES[idx];
+    if(amount > 0){
+      u.points += amount;
+      u.transactions = u.transactions || [];
+      u.transactions.unshift({ id:Date.now(), type:'earn', amount, date:Date.now(), meta:'عجلة الحظ' });
+      await saveUsers();
+      showToast(`ربحت ${amount} نقاط من عجلة الحظ`);
+    } else {
+      await saveUsers();
+      showToast('بدون ربح هالمرة، جرّب بكرة');
+    }
+    render();
+  }, 3200);
+}
+
+/* ---------- extra mini games ---------- */
+function openGuessGame(){
+  const u = getUser();
+  const overlay = document.getElementById('modal-overlay');
+  if(!canPlayGame(u)){
+    overlay.classList.add('active');
+    overlay.innerHTML = `<div class="modal-box"><button class="modal-close" id="mc">${icon('x',18)}</button><div class="disp" style="font-weight:800;margin-bottom:6px;">انتظر قليلاً</div><div style="font-size:13px;color:var(--muted);">يمكنك لعب لعبة أخرى بعد قليل من الوقت لتجنب الغش</div></div>`;
+    document.getElementById('mc').onclick = ()=> overlay.classList.remove('active');
+    return;
+  }
+  const target = Math.floor(Math.random()*10)+1;
+  let tries = 3;
+  overlay.classList.add('active');
+  overlay.innerHTML = `
+    <div class="modal-box">
+      <button class="modal-close" id="mc">${icon('x',18)}</button>
+      <div class="disp" style="font-weight:800;font-size:16px;">احزر الرقم بين 1 و 10</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:4px;" id="guess-msg">لديك ${tries} محاولات</div>
+      <div class="num-grid" id="num-grid"></div>
+    </div>`;
+  document.getElementById('mc').onclick = ()=> overlay.classList.remove('active');
+  const grid = document.getElementById('num-grid');
+  for(let i=1;i<=10;i++){
+    const b = document.createElement('button');
+    b.className='num-btn'; b.textContent=i;
+    b.onclick = async ()=>{
+      tries--;
+      if(i === target){
+        document.getElementById('guess-msg').textContent = 'أحسنت! خمنت الرقم الصحيح';
+        grid.querySelectorAll('button').forEach(x=>x.disabled=true);
+        await rewardGame(5);
+      } else if(tries<=0){
+        document.getElementById('guess-msg').textContent = `انتهت المحاولات، الرقم كان ${target}`;
+        grid.querySelectorAll('button').forEach(x=>x.disabled=true);
+      } else {
+        document.getElementById('guess-msg').textContent = (i<target? 'أكبر من ذلك... ':'أصغر من ذلك... ') + `لديك ${tries} محاولات`;
+        b.disabled = true;
+      }
+    };
+    grid.appendChild(b);
+  }
+}
+function openReactionGame(){
+  const u = getUser();
+  const overlay = document.getElementById('modal-overlay');
+  if(!canPlayGame(u)){
+    overlay.classList.add('active');
+    overlay.innerHTML = `<div class="modal-box"><button class="modal-close" id="mc">${icon('x',18)}</button><div class="disp" style="font-weight:800;margin-bottom:6px;">انتظر قليلاً</div><div style="font-size:13px;color:var(--muted);">يمكنك لعب لعبة أخرى بعد قليل من الوقت لتجنب الغش</div></div>`;
+    document.getElementById('mc').onclick = ()=> overlay.classList.remove('active');
+    return;
+  }
+  let hits=0; const needed=8; let timeLeft=10;
+  overlay.classList.add('active');
+  overlay.innerHTML = `
+    <div class="modal-box">
+      <button class="modal-close" id="mc">${icon('x',18)}</button>
+      <div class="disp" style="font-weight:800;font-size:16px;">اضغط على الهدف ${needed} مرات</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">الوقت: <span id="rt">${timeLeft}</span>ث · النقاط: <span id="rh">0</span>/${needed}</div>
+      <div class="reaction-zone" id="rz"><div class="reaction-target" id="rtgt" style="top:70px;right:70px;">${icon('target',24,'#fff')}</div></div>
+    </div>`;
+  document.getElementById('mc').onclick = ()=>{ clearInterval(countdown); overlay.classList.remove('active'); };
+  const zone = document.getElementById('rz');
+  const target = document.getElementById('rtgt');
+  function moveTarget(){
+    const zw = zone.clientWidth-56, zh = zone.clientHeight-56;
+    target.style.top = Math.floor(Math.random()*zh)+'px';
+    target.style.right = Math.floor(Math.random()*zw)+'px';
+  }
+  target.onclick = ()=>{
+    hits++;
+    document.getElementById('rh').textContent = hits;
+    if(hits>=needed){ clearInterval(countdown); rewardGame(5); return; }
+    moveTarget();
+  };
+  const countdown = setInterval(()=>{
+    timeLeft--;
+    const el = document.getElementById('rt'); if(el) el.textContent = timeLeft;
+    if(timeLeft<=0){
+      clearInterval(countdown);
+      const box = document.querySelector('.modal-box');
+      if(box) box.innerHTML = `<button class="modal-close" id="mc2">${icon('x',18)}</button><div class="disp" style="font-weight:800;">انتهى الوقت</div><div style="font-size:13px;color:var(--muted);margin-top:6px;">حاول مجدداً بعد قليل</div>`;
+      const mc2 = document.getElementById('mc2'); if(mc2) mc2.onclick = ()=> overlay.classList.remove('active');
+    }
+  },1000);
+}
+async function rewardGame(amount){
+  const u = getUser();
+  u.points += amount;
+  u.lastGameAt = Date.now();
+  u.transactions = u.transactions || [];
+  u.transactions.unshift({ id:Date.now(), type:'earn', amount, date:Date.now(), meta:'لعبة' });
+  await saveUsers();
+  document.getElementById('modal-overlay').classList.remove('active');
+  showToast(`ربحت ${amount} نقاط`);
+  render();
+}
+
+function renderBlocked(){
+  return `<div class="blocked-wrap">
+    <div class="blocked-icon">${icon('alert',30,'var(--danger)')}</div>
+    <div class="disp" style="font-size:18px;font-weight:800;margin-bottom:8px;">تم إيقاف الحساب مؤقتًا</div>
+    <div style="font-size:13px;line-height:1.8;opacity:0.6;margin-bottom:24px;">رصدنا نمط مشاهدة غير طبيعي يشبه الاستخدام الآلي (Auto-click). لحماية الحساب والمستخدمين الآخرين تم تعليق النشاط مؤقتًا لمراجعة الفريق.</div>
+    <button id="blocked-logout" style="border:1px solid rgba(255,255,255,0.25);background:transparent;color:#fff;border-radius:12px;padding:11px 20px;font-size:13px;">تسجيل الخروج</button>
+  </div>`;
+}
+function attachBlockedEvents(){
+  document.getElementById('blocked-logout').onclick = ()=>{ state.user=null; render(); };
+}
+
+/* ---------- ADMIN ---------- */
+let adminTab = 'withdrawals';
+function renderAdmin(){
+  const pending = state.withdrawals.filter(r=>r.status==='pending');
+  const totalPendingDzd = pending.reduce((s,r)=>s+r.dzd,0);
+  return `
+  <div class="admin-top">
+    <div><div class="disp" style="font-size:18px;font-weight:800;">لوحة تحكم ربحي</div><div style="font-size:11.5px;opacity:0.65;">admin@rebhi.dz</div></div>
+    <button id="admin-logout" style="border:1px solid rgba(255,255,255,0.25);background:transparent;color:#fff;border-radius:10px;padding:8px 14px;font-size:12.5px;display:flex;align-items:center;gap:6px;">${icon('logout',14,'#fff')}خروج</button>
+  </div>
+  <div class="admin-body">
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-lbl">طلبات معلّقة</div><div class="disp stat-val">${pending.length}</div></div>
+      <div class="stat-card"><div class="stat-lbl">قيمة الطلبات المعلّقة</div><div class="disp stat-val">${totalPendingDzd.toFixed(2)} دج</div></div>
+      <div class="stat-card"><div class="stat-lbl">إجمالي المستخدمين</div><div class="disp stat-val">${Object.keys(state.users).length}</div></div>
+    </div>
+    <div class="admin-tabs2">
+      <div class="admin-tab2 ${adminTab==='withdrawals'?'active':''}" data-atab="withdrawals">طلبات السحب</div>
+      <div class="admin-tab2 ${adminTab==='users'?'active':''}" data-atab="users">المستخدمون</div>
+    </div>
+    ${adminTab==='withdrawals'? renderAdminWithdrawals() : renderAdminUsers()}
+    <div style="font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.7;">بالنسخة الحقيقية، الموافقة هنا لازم تُفعّل عملية تُنفّذ التحويل الفعلي (شحن فليكسي عبر API المزوّد، أو تسجيل العملية للمعالجة اليدوية لتحويلات CCP)، مع سجل تدقيق (audit log) لكل عملية إدارية.</div>
+  </div>`;
+}
+function renderAdminWithdrawals(){
+  const list = [...state.withdrawals].sort((a,b)=>b.date-a.date);
+  if(list.length===0) return '<div class="empty">لا توجد طلبات سحب</div>';
+  return `<div class="section-lbl">طلبات السحب</div><div class="req-list">
+    ${list.map(r=>`
+      <div class="req-item">
+        <div>
+          <div class="req-name">${r.name} — ${r.method}</div>
+          <div class="req-meta">${r.points.toLocaleString('ar-DZ')} نقطة = ${r.dzd} دج · ${r.account||''} · ${fmtDate(r.date)} ${fmtTime(r.date)}</div>
+        </div>
+        ${r.status==='pending'? `
+          <div style="display:flex;gap:8px;">
+            <button class="mini-btn ok" data-approve="${r.id}">${icon('check',13)} موافقة</button>
+            <button class="mini-btn bad" data-reject="${r.id}">${icon('x',13)} رفض</button>
+          </div>` : `<span class="badge ${r.status==='approved'?'ok':'bad'}">${r.status==='approved'? icon('check',12)+' تمت الموافقة' : icon('x',12)+' مرفوض'}</span>`}
+      </div>`).join('')}
+  </div>`;
+}
+function renderAdminUsers(){
+  const list = Object.values(state.users).sort((a,b)=>b.points-a.points);
+  if(list.length===0) return '<div class="empty">لا يوجد مستخدمون بعد</div>';
+  return `<div class="section-lbl">المستخدمون</div><div class="req-list">
+    ${list.map(u=>`
+      <div class="req-item">
+        <div><div class="req-name">${u.name} — ${u.email}</div><div class="req-meta">انضم في ${fmtDate(u.joinedAt)} ${u.blocked? '· موقوف':''}</div></div>
+        <div class="disp" style="font-weight:800;">${u.points} نقطة</div>
+      </div>`).join('')}
+  </div>`;
+}
+function attachAdminEvents(){
+  document.getElementById('admin-logout').onclick = ()=>{ state.screen='auth'; render(); };
+  document.querySelectorAll('[data-atab]').forEach(t=>{ t.onclick = ()=>{ adminTab = t.dataset.atab; render(); }; });
+  document.querySelectorAll('[data-approve]').forEach(b=>{
+    b.onclick = async ()=>{
+      const r = state.withdrawals.find(x=>x.id===b.dataset.approve);
+      r.status = 'approved';
+      await saveWithdrawals();
+      render();
+    };
+  });
+  document.querySelectorAll('[data-reject]').forEach(b=>{
+    b.onclick = async ()=>{
+      const r = state.withdrawals.find(x=>x.id===b.dataset.reject);
+      r.status = 'rejected';
+      const u = state.users[r.email];
+      if(u){ u.points += r.points; await saveUsers(); }
+      await saveWithdrawals();
+      render();
+    };
+  });
+}
+
+(async function init(){ render(); await loadData(); render(); })();
+</script>
+</body>
+</html>
